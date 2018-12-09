@@ -61,25 +61,26 @@ for i, j in friendships:
 
 print(user_dict)
 
-#找到拥有最多朋友的ID
-friends_count_max = []
-max_length = 0
+#找到拥有最多朋友个数与id的对应关系
+count_to_id = {}
 for key in user_dict.keys():
 
     length = len(user_dict[key]["friends"])
-    #print(key, length)
-    if length == max_length:
-        friends_count_max.append(key)
-    if length > max_length:
-        max_length = length
-        friends_count_max.clear()
-        friends_count_max.append(key)
+    lst = count_to_id.get(length, [])
+    lst.append(key)
+    count_to_id[length] = lst
 print(count_to_id)
+
+#排序
+sorted_list = sorted(count_to_id)
+max_count = sorted_list[-1]
+friends_list = count_to_id.get(max_count)
+print(friends_list)
+
 #通过ID找到用户姓名
 print("The user which has the most friends:")
-for id in friends_count_max:
+for id in friends_list:
     print(user_dict[id]["name"])
-
 
 
 
