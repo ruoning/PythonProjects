@@ -37,6 +37,12 @@ users = [
 ]
 
 
+user_dict = {}
+for user in users:
+    user_dict[user["id"]] = user
+    user_dict[user["id"]]["friends"] = []
+
+print(user_dict)
 # 朋友关系
 friendships = [
     (0, 1),
@@ -48,6 +54,33 @@ friendships = [
     (4, 5),
     (5, 6)
 ]
+
+for i, j in friendships:
+    user_dict[i]["friends"].append(j)
+    user_dict[j]["friends"].append(i)
+
+print(user_dict)
+
+#找到拥有最多朋友的ID
+friends_count_max = []
+max_length = 0
+for key in user_dict.keys():
+
+    length = len(user_dict[key]["friends"])
+    #print(key, length)
+    if length == max_length:
+        friends_count_max.append(key)
+    if length > max_length:
+        max_length = length
+        friends_count_max.clear()
+        friends_count_max.append(key)
+print(count_to_id)
+#通过ID找到用户姓名
+print("The user which has the most friends:")
+for id in friends_count_max:
+    print(user_dict[id]["name"])
+
+
 
 
 if __name__ == "__main__":
