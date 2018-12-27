@@ -82,7 +82,12 @@ print("The user which has the most friends:")
 for id in friends_list:
     print(user_dict[id]["name"])
 
-
+#按朋友个数排序输出
+print("Users sorted by friends count: (max to min)")
+for i in sorted_list:
+    lst = sorted_list[i]
+    for j in lst:
+        print(user_dict[j]["names"])
 
 if __name__ == "__main__":
     print("start do hw1.py")
