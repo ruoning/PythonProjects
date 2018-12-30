@@ -1,0 +1,8 @@
+<html>
+<title>{{ website_title }}</title>
+<body>
+    {% for name, website in websites.items() %}
+        <a href="{{ website }}"><p>{{ name }}</p></a><br />
+    {% endfor %}
+</body>
+</html>

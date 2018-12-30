@@ -1,0 +1,33 @@
+variables:
+  DOCKER_REGISTRY: registry-vpc.cn-zhangjiakou.aliyuncs.com/1p
+  IMAGE_NAME: "${DOCKER_REGISTRY}/${CI_PROJECT_NAME}"
+  WEBHOOK: http://airfone.1programmer.com/wechatWork/groupChat?corpsecret=RvnNhoGisfZAvB_ioeJQV_KRgy7_rhdV3wBTI5kS2Fo
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - curl $WEBHOOK -H 'Content-Type:application/json' -X POST -d "{\"message\":\"$CI_PROJECT_NAME 开始构建\",\"groupId\":\"GROUPCI\"}" || true
+    - docker build -t "${IMAGE_NAME}:lastest" .
+    - docker image tag "${IMAGE_NAME}:lastest" "${IMAGE_NAME}:$CI_COMMIT_SHA"
+    - docker push "${IMAGE_NAME}:lastest"
+    - docker push "${IMAGE_NAME}:$CI_COMMIT_SHA"
+
+
+dev_deploy:
+  stage: deploy
+  before_script:
+    - docker stop ${CI_PROJECT_NAME} && docker rm ${CI_PROJECT_NAME} || true
+  script:
+    - sleep 2
+    - docker run -d -v /opt/wwww:/opt/wwww -e SETTINGS_ENV='dev' -p 13006:8000 --env HTML_DIR=/opt/wwww --mount source=$CI_PROJECT_NAME,target=/code/static --name $CI_PROJECT_NAME "${IMAGE_NAME}:${CI_COMMIT_SHA}"
+    - curl $WEBHOOK -H 'Content-Type:application/json' -X POST -d "{\"message\":\"$CI_PROJECT_NAME 测试环境部署成功\",\"groupId\":\"GROUPCI\"}" || true
+  environment:
+    name: dev
+    url: http://flask-html.xiaoyanzhang.com/
+  only:
+    refs:
+      - master
